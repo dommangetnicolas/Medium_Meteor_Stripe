@@ -21,3 +21,4 @@ yarn.lock
 # API Keys
 #
 .env
+settings.json

@@ -1,4 +1,56 @@
 body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  color: #303952;
+}
+
+.stripe-form {
+  width: 50%;
+  margin: 30px auto 0 auto;
   padding: 10px;
-  font-family: sans-serif;
+  border-radius: 10px;
+  background-color: #f6f9fc;
+  display: flex;
+  flex-direction: row;
+}
+
+.stripe-form button {
+  border: 0;
+  padding: 10px 20px;
+  height: 37px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #fff;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: #007fff;
+  transition: all 150ms ease;
+}
+
+.stripe-form button:hover {
+  color: #fff;
+  cursor: pointer;
+  background-color: #007aaa;
+  transform: translateY(-1px);
+}
+
+.stripe-form input {
+  flex: 1;
+}
+
+.StripeElement {
+  flex: 3;
+}
+
+.StripeElement,
+input {
+  padding: 10px 14px;
+  box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px,
+    rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
+  border-radius: 5px;
+  border: none;
+  background: white;
+  margin-right: 10px;
 }
