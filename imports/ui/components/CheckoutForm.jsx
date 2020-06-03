@@ -17,7 +17,7 @@ const CheckoutForm = () => {
 
     try {
       const paymentIntent = await new Promise((resolve, reject) =>
-        Meteor.call("preparePayment", (error, result) => {
+        Meteor.call("preparePayment", amount, (error, result) => {
           if (error) {
             return reject(error);
           }
@@ -30,7 +30,12 @@ const CheckoutForm = () => {
       }
 
       await stripe.confirmCardPayment(paymentIntent, {
-        payment_method: source.id,
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: 'Jenny Rosen',
+          },
+        },
       });
 
       setSucceeded(true);
