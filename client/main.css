@@ -7,12 +7,14 @@ body {
   color: #303952;
 }
 
-.stripe-form {
-  width: 50%;
-  margin: 30px auto 0 auto;
+.stripe-container {
+  margin: 30px 10% 0 10%;
   padding: 10px;
   border-radius: 10px;
   background-color: #f6f9fc;
+}
+
+.stripe-form {
   display: flex;
   flex-direction: row;
 }
@@ -45,7 +47,8 @@ body {
 }
 
 .StripeElement,
-input {
+input,
+.stripe-payment {
   padding: 10px 14px;
   box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px,
     rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
@@ -53,4 +56,34 @@ input {
   border: none;
   background: white;
   margin-right: 10px;
+}
+
+.stripe-payment {
+  margin-right: 0;
+  margin-bottom: 5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.stripe-payment:last-of-type {
+  margin-bottom: 20px;
+}
+
+.stripe-payment .stripe-payment-info {
+  display: flex;
+  flex: 2;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.stripe-payment .stripe-payment-info div {
+  flex: 1;
+}
+
+.stripe-payment .stripe-payment-date {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
 }

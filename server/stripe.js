@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import Stripe from 'stripe'
+import Stripe from "stripe";
 
 const stripe = Stripe(Meteor.settings.private.stripe_secret);
 
@@ -16,4 +16,12 @@ Meteor.methods({
 
     return paymentIntents?.client_secret ?? null;
   },
+  getPayments: async () =>
+    await new Promise((resolve, reject) => {
+      stripe.paymentIntents.list({ limit: 10 }, (err, paymentIntents) => {
+        if (err) return reject(err);
+
+        return resolve(paymentIntents);
+      });
+    }),
 });

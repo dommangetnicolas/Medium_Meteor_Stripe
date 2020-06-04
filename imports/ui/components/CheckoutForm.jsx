@@ -1,12 +1,19 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import moment from "moment";
 
 const CheckoutForm = () => {
+  const [payments, setPayments] = useState([]);
   const [amount, setAmount] = useState(0);
-  const [metadata, setMetadata] = useState(null);
-  const [succeeded, setSucceeded] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
+
+  useEffect(() => {
+    Meteor.call("getPayments", amount, (error, result) => {
+      if (error) return alert(error.message);
+      setPayments(result.data);
+    });
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -29,45 +36,61 @@ const CheckoutForm = () => {
         return;
       }
 
-      await stripe.confirmCardPayment(paymentIntent, {
+      const payment = await stripe.confirmCardPayment(paymentIntent, {
         payment_method: {
           card: elements.getElement(CardElement),
-          billing_details: {
-            name: 'Jenny Rosen',
-          },
         },
       });
 
-      setSucceeded(true);
+      if (payment.error) {
+        throw new Error(payment.error.message);
+      }
+
+      setPayments([...payments, payment.paymentIntent]);
     } catch (err) {
-      alert(`There was an error: ${err.message}`)
+      alert(`There was an error: ${err.message}`);
     }
   };
 
-  if (succeeded) {
-    return (
-      <div className="sr-field-success message">
-        <h1>Your test payment succeeded</h1>
-        <p>View PaymentIntent response:</p>
-        <pre className="sr-callout">
-          <code>{JSON.stringify(metadata, null, 2)}</code>
-        </pre>
-      </div>
-    );
-  }
+  console.log(payments);
 
   return (
-    <form onSubmit={onSubmit} className="stripe-form">
-      <input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
+    <div className="stripe-container">
+      {payments.map((payment) => (
+        <div className="stripe-payment" key={payment.id}>
+          <div className="stripe-payment-info">
+            <div>
+              <strong>ID: </strong>
+              {payment.id.substr(payment.id.length - 5, payment.id.length)}
+            </div>
+            <div>
+              <strong> Amount: </strong>
+              {payment.amount / 100}
+            </div>
+            <div>
+              <strong> Status: </strong>
+              {payment.status}
+            </div>
+          </div>
 
-      <CardElement />
-      <button>PAY</button>
-    </form>
+          <div className="stripe-payment-date">
+            <strong> Created: </strong>
+            {moment.unix(payment.created).format("L").toString()}
+          </div>
+        </div>
+      ))}
+      <form onSubmit={onSubmit} className="stripe-form">
+        <input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+
+        <CardElement />
+        <button>PAY</button>
+      </form>
+    </div>
   );
 };
 
