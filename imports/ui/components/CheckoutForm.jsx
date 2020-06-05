@@ -18,11 +18,13 @@ const CheckoutForm = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    // Verify if Stripe is loaded
     if (!stripe) {
       return;
     }
 
     try {
+      // Get paymentIntent from Meteor Method
       const paymentIntent = await new Promise((resolve, reject) =>
         Meteor.call("preparePayment", amount, (error, result) => {
           if (error) {
@@ -32,10 +34,12 @@ const CheckoutForm = () => {
         })
       );
 
+      // Check if paymentIntent isn't null
       if (!paymentIntent) {
         return;
       }
 
+      // Pay by passing the paymentIntent and CardElement
       const payment = await stripe.confirmCardPayment(paymentIntent, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -46,13 +50,12 @@ const CheckoutForm = () => {
         throw new Error(payment.error.message);
       }
 
+      // Add the payment to the list of latest payments
       setPayments([...payments, payment.paymentIntent]);
     } catch (err) {
       alert(`There was an error: ${err.message}`);
     }
   };
-
-  console.log(payments);
 
   return (
     <div className="stripe-container">
